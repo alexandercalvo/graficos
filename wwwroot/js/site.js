@@ -4,44 +4,55 @@
     arrayData = data.getAttribute("data-info1"),
     obj = JSON.parse(arrayData),
     myChart = [];
-   
+
+//arreglo de colores para los diferentes tipos de lineas 
+let colors =
+    [
+        'rgb(54, 162, 235)',
+        'rgb(255, 205, 86)',
+        'rgb(245, 199, 169)',
+        'rgb(255, 238, 204)',
+        'rgb(255, 128, 128)',
+        'rgb(236, 179, 255)',
+        'rgb(255, 99, 132)',
+
+        'rgb(231, 76, 60)',
+        'rgb(164, 170, 85)',
+        'rgb(127, 151, 205)',
+
+
+        'rgb(72, 143, 177)',
+        'rgb(129, 44, 46)',
+
+    ];
+
 
 const requestInfo = () => {
-    let atributos = data.attributes;
-    console.log("========================================================================")
+    let atributos = data.attributes,
+        objetos = [];
     for (let index = 0; index < atributos.length; index++) { 
         if (data.attributes.getNamedItem(`data-info${index}`)) {
             let arrayData = data.getAttribute(`data-info${index}`),
                 obj1 = JSON.parse(arrayData);
-            console.log(obj1);
+            objetos.push(obj1);
+
+           
         }
       
     }
+    return objetos;
 }
-requestInfo();
-let colors =
-    [
-        'rgb(255, 99, 132)',
-        'rgb(54, 162, 235)',
-        'rgb(255, 205, 86)',
-        'rgb(245, 199, 169)',
-        'rgb(72, 143, 177)',
-        'rgb(255, 173, 153)',
-        'rgb(236, 179, 255)',
-        'rgb(255, 238, 204)',
-        'rgb(255, 128, 128)',
-        'rgb(236, 179, 255)',
-    ];
 
-//let names = obj.map(objeto => objeto[key1]);
-//let percentages = obj.map(objeto => objeto[key2]);
+
+
+
 function Data(title) {
         this.label = title,
         this.data = data,
         this.borderColor= colorLine
 
 }
-const transformData = () => {
+const transformData = (obj) => {
     let info = [];
         let names;
     if ((obj[0] instanceof Array)) {
@@ -55,13 +66,13 @@ const transformData = () => {
             
             }
             let percentages = obj[index].map(objeto => objeto[key2]);
-            //console.log(percentages);
+          
             let n = datos(`prueba${index}`, percentages, colors[index], names);
            
             info.push(n);
 
         }
-        //console.log(info);
+      
     } else {
         info = [];
 
@@ -92,28 +103,13 @@ const datos = (label, data, borderColor, names,) => {
         backgroundColor: borderColor,
     }
 }
-//transformData();
 const labels = (names,  data, type) => {
   
     let borderColor = "#fff";
     if (type != "pie") {
         borderColor = 'rgb(150,228, 128)'
     }
-    let colors =
-        [
-            'rgb(255, 99, 132)',
-            'rgb(54, 162, 235)',
-            'rgb(255, 205, 86)',
-            'rgb(245, 199, 169)',
-            'rgb(72, 143, 177)',
-            'rgb(255, 173, 153)',
-            'rgb(236, 179, 255)',
-            'rgb(255, 238, 204)',
-            'rgb(255, 128, 128)',
-            'rgb(236, 179, 255)',
-        ];
-
-
+   
     return {
         labels: names,
         datasets:data
@@ -135,7 +131,7 @@ const toProcessData = (data, chartType, typeOfFile, canva) => {
 
 
 const createGraphicItemList = (idSelect, contenedor) => {
-    console.log(contenedor);
+    
     if (!contenedor.classList.contains('multiline')) {
         $divSelect = $d.createElement("div"),
             $Select = $d.createElement("select"),
@@ -163,7 +159,7 @@ const createGraphicItemList = (idSelect, contenedor) => {
     }
 }
 
-const createGraphic = ( container, idSelect, names) => {                                                           
+const createGraphic = ( container, idSelect, obj) => {                                                           
     let $canvas = $d.createElement("canvas"),
     type;
         createGraphicItemList(idSelect, container);
@@ -186,10 +182,10 @@ const createGraphic = ( container, idSelect, names) => {
 
     }
 
-    const { nam, info } = transformData();
+    const { nam, info } = transformData(obj);
 
   
-    const chart = new Chart($canvas.getContext("2d"), toProcessData(labels(nam, info, "line"), "line", 'jkjk', $canvas))
+    const chart = new Chart($canvas.getContext("2d"), toProcessData(labels(nam, info, type), type, 'jkjk', $canvas))
     
     myChart.push(chart);
 
@@ -198,15 +194,19 @@ const createGraphic = ( container, idSelect, names) => {
 }
 
 $d.addEventListener("DOMContentLoaded", () => {
+    let objetos = requestInfo();
+    
     for (let index = 0; index < graphicContainer.length; index++) {
-        createGraphic(graphicContainer[index], index);
+        console.log(objetos[index]);
+        createGraphic(graphicContainer[index], index, objetos[index]);
     }
+   
+
 });
 
 
 $d.addEventListener("change", (e) => {
     let $selects = $d.querySelectorAll(".select");
-
 
     for (let index = 0; index < $selects.length; index++) {
         if (e.target.id === $selects[index].getAttribute("id")) {
@@ -214,13 +214,15 @@ $d.addEventListener("change", (e) => {
            
             let idobte = e.target.id.slice(5);
          
-            let cnv = graphicContainer[parseInt(idobte)].children[1];
-            ctx = cnv.getContext('2d');
+            let cnv = graphicContainer[parseInt(idobte)].children[1],
+                ctx = cnv.getContext('2d');      
             if (myChart[idobte]) {
                 myChart[idobte].destroy();
             }
 
-            const { nam, info } = transformData();
+            
+            let objetos = requestInfo();
+            const { nam, info } = transformData(objetos[parseInt(cnv.parentNode.classList[1].slice(4))]);
          
             myChart[idobte] = new Chart(ctx, toProcessData(labels(nam,  info, type), type, 'jkjk', cnv))
 
