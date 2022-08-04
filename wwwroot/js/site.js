@@ -31,11 +31,9 @@ const requestInfo = () => {
                 newObject = JSON.parse(arrayData);
             objects.push(newObject);
         }
-      
     }
     return objects;
 }
-
 
 
 function Data(title) {
