@@ -1,8 +1,6 @@
 ﻿let $d = document,
     graphicContainer = $d.querySelectorAll(".cont"),
-    data = document.querySelector("#datos"),
-    arrayData = data.getAttribute("data-info1"),
-    obj = JSON.parse(arrayData),
+    infomationGraphics = document.querySelector("#datos"),
     myChart = [];
 
 //arreglo de colores para los diferentes tipos de lineas 
@@ -12,46 +10,41 @@ let colors =
         'rgb(255, 205, 86)',
         'rgb(245, 199, 169)',
         'rgb(255, 238, 204)',
+
         'rgb(255, 128, 128)',
         'rgb(236, 179, 255)',
         'rgb(255, 99, 132)',
-
         'rgb(231, 76, 60)',
+
         'rgb(164, 170, 85)',
         'rgb(127, 151, 205)',
-
-
         'rgb(72, 143, 177)',
         'rgb(129, 44, 46)',
-
     ];
 
-
 const requestInfo = () => {
-    let atributos = data.attributes,
-        objetos = [];
-    for (let index = 0; index < atributos.length; index++) { 
-        if (data.attributes.getNamedItem(`data-info${index}`)) {
-            let arrayData = data.getAttribute(`data-info${index}`),
-                obj1 = JSON.parse(arrayData);
-            objetos.push(obj1);
-
-           
+    let attributes = infomationGraphics.attributes,
+        objects = [];
+    for (let index = 0; index < attributes.length; index++) { 
+        if (infomationGraphics.attributes.getNamedItem(`data-info${index}`)) {
+            let arrayData = infomationGraphics.getAttribute(`data-info${index}`),
+                newObject = JSON.parse(arrayData);
+            objects.push(newObject);
         }
       
     }
-    return objetos;
+    return objects;
 }
-
 
 
 
 function Data(title) {
         this.label = title,
-        this.data = data,
+        this.data = infomationGraphics,
         this.borderColor= colorLine
 
 }
+
 const transformData = (obj) => {
     let info = [];
         let names;
@@ -134,19 +127,22 @@ const createGraphicItemList = (idSelect, contenedor) => {
     
     if (!contenedor.classList.contains('multiline')) {
         $divSelect = $d.createElement("div"),
-            $Select = $d.createElement("select"),
-            $option = $d.createElement("option"),
-            $option1 = $d.createElement("option"),
-            $option2 = $d.createElement("option"),
-            $option3 = $d.createElement("option");
-        $option.setAttribute("value", "line");
-        $option1.setAttribute("value", "bar");
-        $option2.setAttribute("value", "pie");
-        $option3.setAttribute("value", "doughnut");
-        $option.textContent = "Line";
-        $option1.textContent = "Barra";
-        $option2.textContent = "Dona";
-        $option3.textContent = "Pastel";
+        $Select = $d.createElement("select"),
+        $option = $d.createElement("option"),
+        $option1 = $d.createElement("option"),
+        $option2 = $d.createElement("option"),
+        $option3 = $d.createElement("option");
+        $option4 = $d.createElement("option");
+        $option1.setAttribute("value", "line");
+        $option2.setAttribute("value", "bar");
+        $option3.setAttribute("value", "pie");
+        $option4.setAttribute("value", "doughnut");
+        $option.textContent = "Selecione Un Tipo De Grafico";
+        $option1.textContent = "Line";
+        $option2.textContent = "Barra";
+        $option3.textContent = "Dona";
+        $option4.textContent = "Pastel";
+       
         $Select.classList.add("select");
         $Select.setAttribute("title", "Grafico");
         $Select.appendChild($option);
@@ -185,7 +181,7 @@ const createGraphic = ( container, idSelect, obj) => {
     const { nam, info } = transformData(obj);
 
   
-    const chart = new Chart($canvas.getContext("2d"), toProcessData(labels(nam, info, type), type, 'jkjk', $canvas))
+    const chart = new Chart($canvas.getContext("2d"), toProcessData(labels(nam, info, type), type, $canvas))
     
     myChart.push(chart);
 
@@ -224,7 +220,7 @@ $d.addEventListener("change", (e) => {
             let objetos = requestInfo();
             const { nam, info } = transformData(objetos[parseInt(cnv.parentNode.classList[1].slice(4))]);
          
-            myChart[idobte] = new Chart(ctx, toProcessData(labels(nam,  info, type), type, 'jkjk', cnv))
+            myChart[idobte] = new Chart(ctx, toProcessData(labels(nam,  info, type), type, cnv))
 
         }
     }
