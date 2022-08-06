@@ -48,6 +48,7 @@ function Data(title) {
 
                                                                  
 const transformData = (obj, title, container) => {
+    console.log(obj);
     let namesLines, nameLine;
     
     let arrayObjects = [],

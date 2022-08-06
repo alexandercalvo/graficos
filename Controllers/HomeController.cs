@@ -95,7 +95,7 @@ namespace teststatics.Controllers
             listSale.Add(sales1);
 
 
-            var json = JsonConvert.SerializeObject(sale);
+            var json = JsonConvert.SerializeObject(sales);
 
             return  json;           
 
