@@ -2,7 +2,7 @@
 
 @{
     ViewData["Title"] = "Home Page";    
-    int i = 0;
+    int i=+ 0;
 }
 <head>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -16,17 +16,25 @@
  <div class="change">
   
   </div>
-<label id="datos" data-info1="@ViewBag.Json"  data-info2="@ViewBag.Sales"   ></label>
+  <!-- etiquetas html donde se deben crear atributos con nombre data-info hasta data-info[n] y asignarle la informacion a mostrar en la vista, debe contener el id="data"-->
+<label id="data" data-info1="@ViewBag.Json"  data-info2="@ViewBag.Sales"  data-info3="@ViewBag.Sales"  data-names1="migrafica"   data-info4="@ViewBag.Sales" data-info5="@ViewBag.Json"></label>
 
 
-
-  <div class="cont cont0 line multiline">  
- 
+<!-- crear mismo número de etiqueta html igual al número de atributos data-info, uno para cada informacion a procesar, cada etiqueta contendra un elemento canva con una grafica estadistica se le debe colocar las clases parentContainer y parentContainer[n] ademas de el tipo de grafico que puede ser de tipo (line, bar,pie, doughnut), si es un grafico para comparar un tipo de iformacion respecto algun intervalo se debe agregar la clase multiline, si es un grafico sencillo se debe agregar el atributo data-title para asignarle el un titulo al grafico -->
+  <div class="parentContainer parentContainer0  line multiline" data-names="2018, 2019, 2020">  
+    
  </div>
- 
+  <div class="parentContainer parentContainer1 bar" data-title="mi grafica" data-names="2023, 2024" >  
+    
 
- 
+ </div>
 
+ <div class="parentContainer parentContainer2 bar" data-title="gallo" >  
+    
 
+ </div>
 
+   <div class="parentContainer parentContainer3  line " >  
+
+       </div>
 

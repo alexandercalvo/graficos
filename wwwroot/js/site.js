@@ -1,7 +1,10 @@
-﻿let $d = document,
-    graphicContainer = $d.querySelectorAll(".cont"),
-    infomationGraphics = document.querySelector("#datos"),
-    myChart = [];
+﻿
+let $d = document,
+    graphicContainer = $d.querySelectorAll(".parentContainer"),
+    infomationGraphics = document.querySelector("#data"),
+   // nameGraphics = infomationGraphics.getAttribute("data-names"),
+    //separateNames = nameGraphics.split(",");
+myChart = [];
 
 //arreglo de colores para los diferentes tipos de lineas 
 let colors =
@@ -43,48 +46,62 @@ function Data(title) {
 
 }
 
-const transformData = (obj) => {
-    let info = [];
-        let names;
+                                                                 
+const transformData = (obj, title, container) => {
+    let namesLines, nameLine;
+    
+    let arrayObjects = [],
+        names,
+        percentages;
     if ((obj[0] instanceof Array)) {
-        
         let labels = Object.keys(obj[0][0]),
-            key1 = labels[0],
-            key2 = labels[1];
-        for (let index = 0; index < obj.length; index++) {
+            key1 = labels[0];
+        key2 = labels[1];
+        let namesGraphics = $d.querySelectorAll(".multiline");
+        let nombres = [];
+        
+        for (let index = 0; index < obj.length; index++) { 
+       
+
             if (index < 1) {
-             names = obj[index].map(objeto => objeto[key1]);
-            
+             names = obj[index].map(obj => obj[key1]);
             }
-            let percentages = obj[index].map(objeto => objeto[key2]);
-          
-            let n = datos(`prueba${index}`, percentages, colors[index], names);
-           
-            info.push(n);
+            percentages = obj[index].map(obj => obj[key2]);
+            //let array = nameInterval.getAttribute();
+            //separateNames[index]
+            if (container.getAttribute("data-names") != null) {
+                namesLines = container.getAttribute("data-names"),
+                    nameLine = namesLines.split(",");
+            }
+
+            let objects = graphicData(nameLine[index], percentages, colors[index], names);
+            arrayObjects.push(objects);
 
         }
-      
     } else {
-        info = [];
+       
+        let labels = Object.keys(obj[0]),
+        key1 = labels[0],
+        key2 = labels[1];
+        names = obj.map(obj => obj[key1]),
+        percentages = obj.map(obj => obj[key2]);
 
-        etiquetas = Object.keys(obj[0]),
-        key1 = etiquetas[0];
-        key2 = etiquetas[1];
-        names = "";
-        names = obj.map(objeto => objeto[key1]),
-        percentages = obj.map(objeto => objeto[key2]);
-        let n = datos(`prueba${0}`, percentages, colors, names);
-        info.push(n);
+        let objects = graphicData(title, percentages, colors, names);
 
-     
+        arrayObjects.push(objects);
+
     }
 
     return {
         nam:names,
-        info,
+        arrayObjects,
     }
 }
-const datos = (label, data, borderColor, names,) => {
+
+const names = () => {
+
+}
+const graphicData = (label, data, borderColor, names,) => {
 
     return {
         names,
@@ -122,15 +139,15 @@ const toProcessData = (data, chartType, typeOfFile, canva) => {
 
 
 const createGraphicItemList = (idSelect, contenedor) => {
-    
     if (!contenedor.classList.contains('multiline')) {
-        $divSelect = $d.createElement("div"),
-        $Select = $d.createElement("select"),
-        $option = $d.createElement("option"),
-        $option1 = $d.createElement("option"),
-        $option2 = $d.createElement("option"),
-        $option3 = $d.createElement("option");
+      let  $divSelect = $d.createElement("div"),
+            $Select = $d.createElement("select"),
+            $option = $d.createElement("option"),
+            $option1 = $d.createElement("option"),
+            $option2 = $d.createElement("option"),
+            $option3 = $d.createElement("option");
         $option4 = $d.createElement("option");
+        $option.setAttribute("value", "line");
         $option1.setAttribute("value", "line");
         $option2.setAttribute("value", "bar");
         $option3.setAttribute("value", "pie");
@@ -138,28 +155,55 @@ const createGraphicItemList = (idSelect, contenedor) => {
         $option.textContent = "Selecione Un Tipo De Grafico";
         $option1.textContent = "Line";
         $option2.textContent = "Barra";
-        $option3.textContent = "Dona";
-        $option4.textContent = "Pastel";
-       
+        $option3.textContent = "Pastel";
+        $option4.textContent = "Dona";
+
         $Select.classList.add("select");
         $Select.setAttribute("title", "Grafico");
         $Select.appendChild($option);
         $Select.appendChild($option1);
         $Select.appendChild($option2);
         $Select.appendChild($option3);
+        $Select.appendChild($option4);
         $Select.setAttribute("id", `canva${idSelect}`);
         $divSelect.appendChild($Select);
         contenedor.appendChild($divSelect);
+    } else {
+        let $divSelect = $d.createElement("div"),
+            $Select = $d.createElement("select"),
+            $option = $d.createElement("option"),
+            $option1 = $d.createElement("option"),
+            $option2 = $d.createElement("option");
+            $option.setAttribute("value", "line");
+            $option1.setAttribute("value", "line");
+            $option2.setAttribute("value", "bar");
+            $option.textContent = "Selecione Un Tipo De Grafico";
+
+            $Select.classList.add("select");
+            $Select.setAttribute("title", "Grafico");
+            $Select.appendChild($option);
+            $Select.appendChild($option1);
+            $Select.appendChild($option2);
+
+            $option1.textContent = "Line";
+            $option2.textContent = "Barra";
+            $Select.setAttribute("id", `canva${idSelect}`);
+            $divSelect.appendChild($Select);
+            contenedor.appendChild($divSelect);
+
     }
 }
 
-const createGraphic = ( container, idSelect, obj) => {                                                           
+const createGraphic = (container, idSelect, obj) => {
     let $canvas = $d.createElement("canvas"),
-    type;
-        createGraphicItemList(idSelect, container);
-
+        type,
+        title = "";
+    createGraphicItemList(idSelect, container);
+  
     container.appendChild($canvas);
- 
+    if (container.getAttribute("data-title") != null) {
+        title = container.getAttribute("data-title");
+    }
     switch (container.classList[2]) {
         case "pie":
             type = "pie";
@@ -176,10 +220,10 @@ const createGraphic = ( container, idSelect, obj) => {
 
     }
 
-    const { nam, info } = transformData(obj);
+    const { nam, arrayObjects } = transformData(obj, title, container);
 
   
-    const chart = new Chart($canvas.getContext("2d"), toProcessData(labels(nam, info, type), type, $canvas))
+    const chart = new Chart($canvas.getContext("2d"), toProcessData(labels(nam, arrayObjects, type), type, $canvas))
     
     myChart.push(chart);
 
@@ -191,7 +235,7 @@ $d.addEventListener("DOMContentLoaded", () => {
     let objetos = requestInfo();
     
     for (let index = 0; index < graphicContainer.length; index++) {
-        console.log(objetos[index]);
+       
         createGraphic(graphicContainer[index], index, objetos[index]);
     }
    
@@ -206,19 +250,22 @@ $d.addEventListener("change", (e) => {
         if (e.target.id === $selects[index].getAttribute("id")) {
             let type = $selects[index].value;
            
-            let idobte = e.target.id.slice(5);
-         
-            let cnv = graphicContainer[parseInt(idobte)].children[1],
-                ctx = cnv.getContext('2d');      
-            if (myChart[idobte]) {
-                myChart[idobte].destroy();
+            let idObject = e.target.id.slice(5);
+            console.log(idObject);
+            let canva = graphicContainer[parseInt(idObject)].children[1],
+                contexto = canva.getContext('2d');
+            if (myChart[idObject]) {
+                myChart[idObject].destroy();
             }
 
             
-            let objetos = requestInfo();
-            const { nam, info } = transformData(objetos[parseInt(cnv.parentNode.classList[1].slice(4))]);
+            let objetos = requestInfo(),
+                title = canva.parentNode.getAttribute("data-title");
+            container = canva.parentNode;
+
+            const { nam, arrayObjects } = transformData(objetos[parseInt(canva.parentNode.classList[1].slice(15))], title, container);
          
-            myChart[idobte] = new Chart(ctx, toProcessData(labels(nam,  info, type), type, cnv))
+            myChart[idObject] = new Chart(contexto, toProcessData(labels(nam,  arrayObjects, type), type, canva))
 
         }
     }

@@ -16,8 +16,12 @@ namespace teststatics.Controllers
         public string test ()
         {
             List<Sales> sales = new List<Sales>();
-          
+            List<Sales> sales1 = new List<Sales>();
+            List<List<Sales>> listSale = new List<List<Sales>>();
+            
             Sales sale = new Sales();
+            Sales sale1 = new Sales();
+
             sale.mes = "Enero";
             sale.value = 30000000;
             sales.Add(sale);
@@ -52,7 +56,46 @@ namespace teststatics.Controllers
             sale.value = 500000;
             sales.Add(sale);
 
-              var json = JsonConvert.SerializeObject(sales);
+
+            sale1.mes = "Enero";
+            sale1.value = 10000000;
+            sales1.Add(sale1);
+
+            sale1 = new Sales();
+            sale1.mes = "Febreo";
+            sale1.value = 60000000;
+            sales1.Add(sale1);
+
+            sale1 = new Sales();
+            sale1.mes = "Marzo";
+            sale1.value = 50000000;
+            sales1.Add(sale1);
+
+            sale1 = new Sales();
+            sale1.mes = "Abril";
+            sale1.value = 200000;
+            sales1.Add(sale1);
+
+            sale1 = new Sales();
+            sale1.mes = "Mayo";
+            sale1.value = 1200000;
+            sales1.Add(sale1);
+
+            sale1 = new Sales();
+            sale1.mes = "Junio";
+            sale1.value = 500000;
+            sales1.Add(sale1);
+
+            sale1 = new Sales();
+            sale1.mes = "Julio";
+            sale1.value = 900000;
+            sales1.Add(sale1);
+
+            listSale.Add(sales);
+            listSale.Add(sales1);
+
+
+            var json = JsonConvert.SerializeObject(sale);
 
             return  json;           
 
